@@ -3,11 +3,10 @@ Created on Aug 14, 2011
 
 @author: sam
 '''
-
 from PySide.QtGui import *
-from PySide.QtCore import *
 from PySide import QtUiTools
 from my2ca.mysqlcon import mysqlconmanager
+from my2ca.ui import ui_mainwindow
 
 class ConnectMySqlDlg:
     
@@ -28,7 +27,7 @@ class ConnectMySqlDlg:
 
 
 
-class MainWindow:
+class MainWindow(QMainWindow):
     
     connection = None
     
@@ -44,7 +43,9 @@ class MainWindow:
                                                       c['port'])
     
     def __init__(self):
-        self.ui = QtUiTools.QUiLoader().load('ui/uic/mainwindow.ui')
+        QMainWindow.__init__(self)
+        self.ui = ui_mainwindow.Ui_MainWindow()
+        self.ui.setupUi(self)
         self.ui.connectButton.clicked.connect(self.connect_mysql)
     
     def run(self):
