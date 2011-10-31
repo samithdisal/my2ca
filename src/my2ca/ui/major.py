@@ -32,6 +32,15 @@ class MainWindow(QMainWindow):
     
     connection = None
     
+    def generate_code(self):
+        pass
+    
+    def generate_doc(self):
+        pass
+    
+    def test_code(self):
+        pass
+    
     def connect_mysql(self):
         dlg = ConnectMySqlDlg()
         dlg.run()
