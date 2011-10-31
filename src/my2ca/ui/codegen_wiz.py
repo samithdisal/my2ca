@@ -6,10 +6,31 @@ Created on Oct 31, 2011
 
 from PySide.QtGui import *
 
+from my2ca.ui.ui_select_tables_page import Ui_selectTablesPage
+
 class SelectTablesPage(QWizardPage):
     
     def __init__(self):
         QWizardPage.__init__(self)
+        self.ui = Ui_selectTablesPage()
+        self.ui.setupUi(self)
+        
+        self.ui.addButton.clicked.connect(self.add)
+        self.ui.addAllButton.clicked.connect(self.addAll)
+        self.ui.removeButton.clicked.connect(self.remove)
+        self.ui.removeAllButton.clicked.connect(self.removeAll)
+        pass
+    
+    def add(self):
+        pass
+    
+    def addAll(self):
+        pass
+    
+    def remove(self):
+        pass
+    
+    def removeAll(self):
         pass
     
     pass
