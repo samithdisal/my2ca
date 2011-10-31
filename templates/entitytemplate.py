@@ -49,5 +49,16 @@ class ${entity_name}(entity):
                    }
                   )
         pass
-    
+</%def>
+<%def name="makeremove(cols)">
+    """
+    Default Remove Method
+    """
+    def remove(self):
+        if self.__ca_hash == None:
+            #the object is not persisted so nothing to remove anyway
+            return False
+        cf = pycassa.ColumnFamily(conpool.connection_pool, self.__ca_cf)
+        cf.remove(self.__ca_hash)
+        return True
 </%def>
