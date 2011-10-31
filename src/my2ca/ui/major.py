@@ -4,6 +4,7 @@ Created on Aug 14, 2011
 @author: sam
 '''
 from PySide.QtGui import *
+from PySide.QtCore import *
 from PySide import QtUiTools
 from my2ca.mysqlcon import mysqlconmanager
 from my2ca.ui import ui_mainwindow
@@ -40,7 +41,12 @@ class MainWindow(QMainWindow):
                                                       c['user'],
                                                       c['password'],
                                                       c['database'],
-                                                      c['port'])
+                                                      int(c['port']))
+            self.tablelist = mysqlconmanager.get_table_list(self.connection)
+            model = QStringListModel()
+            strings = list( tbl[0] for tbl in self.tablelist )
+            model.setStringList(strings)
+            self.ui.tablesList.setModel(model)
     
     def __init__(self):
         QMainWindow.__init__(self)
@@ -49,4 +55,4 @@ class MainWindow(QMainWindow):
         self.ui.connectButton.clicked.connect(self.connect_mysql)
     
     def run(self):
-        self.ui.show()
+        self.show()

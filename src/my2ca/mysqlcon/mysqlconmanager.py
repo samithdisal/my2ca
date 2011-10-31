@@ -17,6 +17,6 @@ def connect(host, username, password, db, port):
 def get_table_list(connection):
     
     query = """SHOW TABLES;"""
-    connection.query(query)
-    rows = connection.store_results().fetchall()
-    return rows
+    c = connection.cursor()
+    c.execute(query)
+    return c.fetchall()

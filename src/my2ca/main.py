@@ -14,5 +14,5 @@ if __name__ == '__main__':
             from ui import major
             app = QtGui.QApplication(sys.argv)
             mw = major.MainWindow()
-            mw.ui.show()
+            mw.run()
             sys.exit(app.exec_())

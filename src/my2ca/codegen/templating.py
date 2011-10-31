@@ -5,13 +5,32 @@ Created on Aug 14, 2011
 '''
 
 import mako
+import mako.lookup
+
+import datetime
+
+author = 'Unknown'
+
+class Col:
+    """
+    Represents a Column of a table in cassandra way
+    """
+    def __init__(self, name, datatype, typeargs):
+        self.name = name
+        self.datatype = datatype
+        self.typeargs = typeargs
+    
+    def add_desctipyion(self, desctiption):
+        self.description = desctiption
+    
+
 
 
 '''
 Template Lookup Directories and Include paths.
 '''
-template_lookup_dir = mako.lookup.TemplateLookup(directories=['/templates'],
-                                                 module_directory='/generated_output',
+template_lookup_dir = mako.lookup.TemplateLookup(directories=['../../templates'],
+                                                 module_directory='../../generated_output',
                                                  output_encoding='utf-8')
 
 
