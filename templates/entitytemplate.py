@@ -28,6 +28,7 @@ class ${entity_name}(entity):
         entity.__init__(self)
     
     ${makeinsert(cols)}
+    ${makeremove()}
     
 <%def name="makecol(col)">
     self.${col.name} = ${col.datatype}(${col.typeargs})
@@ -50,7 +51,7 @@ class ${entity_name}(entity):
                   )
         pass
 </%def>
-<%def name="makeremove(cols)">
+<%def name="makeremove()">
     """
     Default Remove Method
     """
