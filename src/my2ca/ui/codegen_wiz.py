@@ -40,8 +40,8 @@ class FinalizePage(QWizardPage):
 
 class CodegenWiz(QWizard):
     
-    def __init__(self):
-        QWizard.__init__(self)
+    def __init__(self, parent = None):
+        QWizard.__init__(self, parent)
         
         self.selectTablePage = SelectTablesPage()
         self.previewCodePage = PreviewCodePage()

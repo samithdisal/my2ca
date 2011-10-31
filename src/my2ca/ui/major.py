@@ -7,7 +7,7 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 from PySide import QtUiTools
 from my2ca.mysqlcon import mysqlconmanager
-from my2ca.ui import ui_mainwindow
+from my2ca.ui import ui_mainwindow, codegen_wiz
 
 class ConnectMySqlDlg:
     
@@ -33,6 +33,8 @@ class MainWindow(QMainWindow):
     connection = None
     
     def generate_code(self):
+        wiz = codegen_wiz.CodegenWiz(self)
+        wiz.show()
         pass
     
     def generate_doc(self):
@@ -62,6 +64,7 @@ class MainWindow(QMainWindow):
         self.ui = ui_mainwindow.Ui_MainWindow()
         self.ui.setupUi(self)
         self.ui.connectButton.clicked.connect(self.connect_mysql)
+        self.ui.codegenButton.clicked.connect(self.generate_code)
     
     def run(self):
         self.show()
