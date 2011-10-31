@@ -7,15 +7,17 @@ from PySide.QtGui import *
 from PySide.QtCore import *
 from PySide import QtUiTools
 from my2ca.mysqlcon import mysqlconmanager
-from my2ca.ui import ui_mainwindow, codegen_wiz
+from my2ca.ui import ui_mainwindow, codegen_wiz, ui_connectMySqlDlg
 
-class ConnectMySqlDlg:
+class ConnectMySqlDlg(QDialog):
     
-    def __init__(self):
-        self.ui = QtUiTools.QUiLoader().load('ui/uic/connectMySqlDlg.ui', None)
+    def __init__(self, parent = None):
+        QDialog.__init__(self, parent)
+        self.ui = ui_connectMySqlDlg.Ui_connectMySqlDlg()
+        self.ui.setupUi(self)
     
     def run(self):
-        self.ui.exec_()
+        self.exec_()
     
     def get_details(self):
         details = {'host':self.ui.hostE.text(),
@@ -34,7 +36,7 @@ class MainWindow(QMainWindow):
     
     def generate_code(self):
         wiz = codegen_wiz.CodegenWiz(self)
-        wiz.show()
+        wiz.exec_()
         pass
     
     def generate_doc(self):
@@ -46,7 +48,7 @@ class MainWindow(QMainWindow):
     def connect_mysql(self):
         dlg = ConnectMySqlDlg()
         dlg.run()
-        if dlg.ui.result():
+        if dlg.result():
             c = dlg.get_details()
             self.connection = mysqlconmanager.connect(c['host'],
                                                       c['user'],

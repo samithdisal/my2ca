@@ -7,6 +7,7 @@ Created on Oct 31, 2011
 from PySide.QtGui import *
 
 from my2ca.ui.ui_select_tables_page import Ui_selectTablesPage
+from my2ca.ui.ui_preview_page import Ui_previewPage
 
 class SelectTablesPage(QWizardPage):
     
@@ -39,6 +40,13 @@ class PreviewCodePage(QWizardPage):
     
     def __init__(self):
         QWizardPage.__init__(self)
+        self.ui = Ui_previewPage()
+        self.ui.setupUi(self)
+        self.ui.outputFilesList.itemSelectionChanged.connect(self.on_selectedfile_changed)
+        pass
+    
+    def on_selectedfile_changed(self):
+        print "HI"
         pass
     
     pass
