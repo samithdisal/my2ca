@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'connectMySqlDlg.ui'
 #
-# Created: Mon Oct 31 23:50:14 2011
+# Created: Tue Nov  1 00:36:31 2011
 #      by: pyside-uic 0.2.12 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
