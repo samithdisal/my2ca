@@ -40,7 +40,23 @@ class ${entity_name}(entity):
     def persist(self):
         if self.__ca_hash == None:
             self.__ca_hash == uuid.uuid4()
+            #triggers specially for pre insert
+            #---------------------
+            
+            #---------------------
+        else:
+            #triggers specially for non inserting pre update
+            #---------------------
+            
+            #---------------------
+        
         cf = pycassa.ColumnFamily(conpool.connection_pool, self.__ca_cf)
+        
+        #triggers for pre insert or update
+        #-------------------------
+        
+        #-------------------------
+        
         cf.insert(
                   self.__ca_hash,
                   {
@@ -49,6 +65,11 @@ class ${entity_name}(entity):
                    % endfor
                    }
                   )
+        
+        #triggers for post insert or update
+        #-------------------------
+        
+        #-------------------------
         pass
 </%def>
 <%def name="makeremove()">
@@ -60,6 +81,17 @@ class ${entity_name}(entity):
             #the object is not persisted so nothing to remove anyway
             return False
         cf = pycassa.ColumnFamily(conpool.connection_pool, self.__ca_cf)
+        
+        #triggers for pre remove
+        #---------------------------
+        
+        #---------------------------
+        
         cf.remove(self.__ca_hash)
+        
+        #tridders for post remove
+        #---------------------------
+        
+        #---------------------------
         return True
 </%def>
