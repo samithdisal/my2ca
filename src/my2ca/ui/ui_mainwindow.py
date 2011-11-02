@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Tue Nov  1 00:50:36 2011
+# Created: Wed Nov  2 13:49:01 2011
 #      by: pyside-uic 0.2.12 running on PySide 1.0.5
 #
 # WARNING! All changes made in this file will be lost!
@@ -15,8 +15,8 @@ class Ui_MainWindow(object):
         MainWindow.resize(800, 599)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.gridLayout = QtGui.QGridLayout(self.centralwidget)
-        self.gridLayout.setObjectName("gridLayout")
+        self.verticalLayout = QtGui.QVBoxLayout(self.centralwidget)
+        self.verticalLayout.setObjectName("verticalLayout")
         self.widget = QtGui.QWidget(self.centralwidget)
         self.widget.setObjectName("widget")
         self.horizontalLayout_2 = QtGui.QHBoxLayout(self.widget)
@@ -28,21 +28,21 @@ class Ui_MainWindow(object):
         self.codegenButton = QtGui.QPushButton(self.widget)
         self.codegenButton.setObjectName("codegenButton")
         self.horizontalLayout_2.addWidget(self.codegenButton)
-        self.gridLayout.addWidget(self.widget, 0, 0, 1, 1)
+        self.verticalLayout.addWidget(self.widget)
         self.horizontalLayout = QtGui.QHBoxLayout()
         self.horizontalLayout.setObjectName("horizontalLayout")
+        self.tablesList = QtGui.QListView(self.centralwidget)
+        self.tablesList.setObjectName("tablesList")
+        self.horizontalLayout.addWidget(self.tablesList)
         self.erdArea = QtGui.QScrollArea(self.centralwidget)
         self.erdArea.setWidgetResizable(True)
         self.erdArea.setObjectName("erdArea")
         self.scrollAreaWidgetContents = QtGui.QWidget()
-        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 784, 509))
+        self.scrollAreaWidgetContents.setGeometry(QtCore.QRect(0, 0, 387, 509))
         self.scrollAreaWidgetContents.setObjectName("scrollAreaWidgetContents")
-        self.tablesList = QtGui.QListView(self.scrollAreaWidgetContents)
-        self.tablesList.setGeometry(QtCore.QRect(0, -10, 393, 515))
-        self.tablesList.setObjectName("tablesList")
         self.erdArea.setWidget(self.scrollAreaWidgetContents)
         self.horizontalLayout.addWidget(self.erdArea)
-        self.gridLayout.addLayout(self.horizontalLayout, 1, 0, 1, 1)
+        self.verticalLayout.addLayout(self.horizontalLayout)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtGui.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 800, 20))
