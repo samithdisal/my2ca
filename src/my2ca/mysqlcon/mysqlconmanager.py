@@ -20,3 +20,10 @@ def get_table_list(connection):
     c = connection.cursor()
     c.execute(query)
     return c.fetchall()
+
+def get_table_info(connection, table):
+    query = 'SHOW CEATE TABLE ' + str(table)
+    c = connection.cursor()
+    c.execute(query)
+    res = c.fetchall()
+    return res[0][1]
