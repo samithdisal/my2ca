@@ -55,6 +55,9 @@ class MainWindow(QMainWindow):
                                                       c['password'],
                                                       c['database'],
                                                       int(c['port']))
+            if self.connection == None:
+                QMessageBox.warning(self, "Connect to Database","Connection Failed")
+                return
             self.tablelist = mysqlconmanager.get_table_list(self.connection)
             model = QStringListModel()
             strings = list( tbl[0] for tbl in self.tablelist )
