@@ -35,8 +35,9 @@ class MainWindow(QMainWindow):
     connection = None
     
     def generate_code(self):
+        codegen_wiz.connection = self.connection
         wiz = codegen_wiz.CodegenWiz(self)
-        wiz.exec_()
+        wiz.run()
         pass
     
     def generate_doc(self):
