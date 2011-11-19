@@ -36,9 +36,6 @@ class SelectTablesPage(QWizardPage):
         self.ui.removeButton.clicked.connect(self.remove)
         self.ui.removeAllButton.clicked.connect(self.removeAll)
         
-        self.ui.availableTableList.setModel(
-                                            QList
-                                            )
         
         pass
     

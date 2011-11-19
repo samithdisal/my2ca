@@ -3,8 +3,12 @@ Created on Oct 31, 2011
 
 @author: sam
 '''
-import sqlparse
-from sqlparse import tokens, filters, sql
+
+#sqlparse do not supports CREATE statements yet.
+from pyparsing import *
+import string
+
+
 
 class SQLCol:
     name = str()
@@ -18,8 +22,8 @@ class SQLCol:
 
 class SQLTable:
     name = str()
-    cols = {}
-    pks = {}
+    cols = []
+    pks = []
     engine = "InnoDB"
     dcharset = "utf8"
     
@@ -28,51 +32,69 @@ class SQLTable:
 def tokenize(statement):
     return statement.tokens
 
-def parsesql(query):
-    res = sqlparse.parse(query)
-    return res
 
 def _get_columns(toks):
     pass
 
 def convert_table(createsql):
-    res = parsesql(createsql)
-    r = res[0]
-    if r.get_type() != "CREATE":
-        return False
-    toks = tokenize(res[0])
     
     tbl = SQLTable()
     
-    for t in toks:
-        if t.is_whitespace():
-            continue
-        if isinstance(t, sql.Function):
-            ftoks = t.tokens
-            for ft in ftoks:
-                if isinstance(ft, sql.Identifier):
-                    if ft.tokens[0].value == "ENGINE":
-                        continue
-                    tbl.name = ft.tokens[0].value
-                if isinstance(ft,sql.Parenthesis):
-                    tbl.cols =_get_columns(ft.tokens)
-                    pass
-                pass
-            pass
-        print "<token>" + str(t) + "</token>"
-    pass
+    createTableStmt = Forward()
+    createToken = Keyword("create", caseless=True)
+    tableToken = Keyword("table", caseless=True)
+    
+    primarykeyToken = Keyword("primary key", caseless=True)
+    engineToken = Keyword("engine", caseless=True)
+    charsetToken = Keyword("default charset", caseless=True)
+    
+    EQU_ = Keyword("=")
+    NOTNULL_ = Keyword("not null", caseless=True)
+    DEFNULL_ = Keyword("default null", caseless=True)
+    
+    
+    
+    #starts with a letter and then any alphanumeric charactor
+    ident = Word("`" + alphas + "`").setName("identifier")
+    valtype = Word(alphas).setName("valtype")
+    numbers = Word(alphanums).setName("numbers")
+    
+    tablename = Upcase(ident)
+    
+    columnStmt = Forward()
+    
+    
+    columnName = Upcase(ident)
+    columnType = Upcase(valtype+Optional(Literal("(")+numbers+Literal(")"),""))
+    
+    columnStmt << columnName + columnType + (NOTNULL_ | DEFNULL_ ) + Literal(",")
+    
+    columnList = Group(OneOrMore(columnStmt.setResultsName("column", True)))
+    
+    primary_key = Forward()
+    
+    a_primary_key = Upcase(ident)
+    primary_key << Literal("(").suppress() + a_primary_key + ZeroOrMore(Literal(",") + a_primary_key) + Literal(")").suppress()
+    
+    engine = ident
+    
+    charset = ident
+    
+    
+    createTableStmt << ( createToken + tableToken + tablename.setResultsName("tablename") + Literal("(") + columnList.setResultsName("columns") + ZeroOrMore( ident + Literal(","))
+                        + primarykeyToken + primary_key.setResultsName("pk") + Literal(")"))
+    
+    tokens = createTableStmt.parseString(createsql)
+    
+    tbl.name = tokens.tablename
+    tbl.pks = tokens.pk
+    tbl.cols = tokens.columns
+    
+    return tbl
 
 def generate_ca_query(token):
     pass
+                        
 
 if __name__ == '__main__':
-    convert_table("""CREATE TABLE `authors` (
-                  `username` varchar(45) NOT NULL,
-                  `displayname` varchar(45) NOT NULL,
-                  `password` varchar(45) NOT NULL,
-                  `activities` int(11) NOT NULL,
-                  `registerdate` datetime NOT NULL,
-                  `lastlogin` datetime NOT NULL,
-                  PRIMARY KEY (`username`)
-                ) ENGINE=InnoDB DEFAULT CHARSET=utf8"""
-                  )
+    convert_table("""CREATE TABLE `Category` ( `categoryId` bigint(20) NOT NULL, `categoryName` varchar(255) DEFAULT NULL, PRIMARY KEY (`categoryId`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8""")
