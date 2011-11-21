@@ -36,6 +36,7 @@ class ${t.name}(entity):
 <%def name="makeinsert(cols)">
     """
     Default Insert/Update Method
+    Call this after an update or after creating an object
     """
     def persist(self):
         if self.__ca_hash == None:

@@ -13,4 +13,7 @@ keyspace = "${keyspace}"
 servers = ${servers}
 credentials = ${credentials}
 
+"""
+The Connection Pool
+"""
 connection_pool = pycassa.connect(keyspace=keyspace, servers=servers, credentials=credentials)
