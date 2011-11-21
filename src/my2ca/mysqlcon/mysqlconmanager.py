@@ -19,10 +19,12 @@ def get_table_list(connection):
     query = """SHOW TABLES;"""
     c = connection.cursor()
     c.execute(query)
-    return c.fetchall()
+    res = c.fetchall()
+    print res
+    return res
 
 def get_table_info(connection, table):
-    query = 'SHOW CEATE TABLE ' + str(table)
+    query = 'SHOW CREATE TABLE ' + str(table) + ';'
     c = connection.cursor()
     c.execute(query)
     res = c.fetchall()

@@ -6,8 +6,9 @@ Created on Oct 31, 2011
 
 #sqlparse do not supports CREATE statements yet.
 from pyparsing import *
-import string
 
+import sqlparse
+from sqlparse.tokens import DML
 
 
 class SQLCol:
@@ -33,68 +34,69 @@ def tokenize(statement):
     return statement.tokens
 
 
-def _get_columns(toks):
-    pass
+def _strip(s,loc,tok):
+    res = str()
+    for c in tok[0]:
+        if c != "`":
+            res += c
+            pass
+        pass
+    return res
 
-def convert_table(createsql):
-    
+def convert_sql_table(createsql):
     tbl = SQLTable()
     
-    createTableStmt = Forward()
-    createToken = Keyword("create", caseless=True)
-    tableToken = Keyword("table", caseless=True)
+    paranths = Forward()
+    paranths << "(" + ZeroOrMore(CharsNotIn("()") | paranths) + ")"
     
-    primarykeyToken = Keyword("primary key", caseless=True)
-    engineToken = Keyword("engine", caseless=True)
-    charsetToken = Keyword("default charset", caseless=True)
+    idt = Word("`",alphanums + "`").setName("simple_identifier")
     
-    EQU_ = Keyword("=")
-    NOTNULL_ = Keyword("not null", caseless=True)
-    DEFNULL_ = Keyword("default null", caseless=True)
+    idt.addParseAction(_strip)
     
+    pk_def = Group(Literal("PRIMARY") + "KEY" + "(" + delimitedList(idt).setResultsName("pks") + ")")
     
+    field_def = Group(idt.setResultsName("fieldname") + Word(alphas).setResultsName("fieldtype") + Optional(paranths) + Optional((Literal("NOT") + "NULL")) + Optional((Literal("DEFAULT") + "NULL"))).setResultsName("field")
     
-    #starts with a letter and then any alphanumeric charactor
-    ident = Word("`" + alphas + "`").setName("identifier")
-    valtype = Word(alphas).setName("valtype")
-    numbers = Word(alphanums).setName("numbers")
-    
-    tablename = Upcase(ident)
-    
-    columnStmt = Forward()
+    field_list_def = Group(delimitedList(field_def, ","))
     
     
-    columnName = Upcase(ident)
-    columnType = Upcase(valtype+Optional(Literal("(")+numbers+Literal(")"),""))
     
-    columnStmt << columnName + columnType + (NOTNULL_ | DEFNULL_ ) + Literal(",")
+    create_table_def = (Literal("CREATE") + "TABLE" + idt.setResultsName("tablename") 
+                        + "(" + field_list_def.setResultsName("fields") + "," + pk_def.setResultsName("pks") + ")" 
+                        + ZeroOrMore(Word(alphanums + "=")))
     
-    columnList = Group(OneOrMore(columnStmt.setResultsName("column", True)))
-    
-    primary_key = Forward()
-    
-    a_primary_key = Upcase(ident)
-    primary_key << Literal("(").suppress() + a_primary_key + ZeroOrMore(Literal(",") + a_primary_key) + Literal(")").suppress()
-    
-    engine = ident
-    
-    charset = ident
-    
-    
-    createTableStmt << ( createToken + tableToken + tablename.setResultsName("tablename") + Literal("(") + columnList.setResultsName("columns") + ZeroOrMore( ident + Literal(","))
-                        + primarykeyToken + primary_key.setResultsName("pk") + Literal(")"))
-    
-    tokens = createTableStmt.parseString(createsql)
+    tokens = create_table_def.parseString(createsql)
     
     tbl.name = tokens.tablename
-    tbl.pks = tokens.pk
-    tbl.cols = tokens.columns
+    
+    print tokens.tablename
+    for f in tokens.fields:
+        fil = SQLCol()
+        fil.name = f.fieldname
+        fil.type = f.fieldtype
+        tbl.cols.append(fil)
+        print f.fieldname, " => ", f.fieldtype
+        pass
+    
+    tbl.pks = tokens.pks
+    print tbl.pks.pks
     
     return tbl
 
+
 def generate_ca_query(token):
     pass
-                        
+
+
+def convert_sql(query):
+    stmts = sqlparse.parse(query)
+    for s in stmts:
+        if s.tokens[0].type == DML:
+            print "Hmmm"
+        pass
+    pass
+
+
 
 if __name__ == '__main__':
-    convert_table("""CREATE TABLE `Category` ( `categoryId` bigint(20) NOT NULL, `categoryName` varchar(255) DEFAULT NULL, PRIMARY KEY (`categoryId`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8""")
+    convert_sql_table("""CREATE TABLE `Test` ( `idd` varchar(255) NOT NULL, `noidd` varchar(200) DEFAULT NULL, PRIMARY KEY (`idd`) )""")

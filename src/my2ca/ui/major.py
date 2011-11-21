@@ -8,6 +8,7 @@ from PySide.QtCore import *
 from PySide import QtUiTools
 from my2ca.mysqlcon import mysqlconmanager
 from my2ca.ui import ui_mainwindow, codegen_wiz, ui_connectMySqlDlg
+from my2ca.codegen.codegen import codegen, CodeGen
 
 class ConnectMySqlDlg(QDialog):
     
@@ -64,7 +65,12 @@ class MainWindow(QMainWindow):
             strings = list( tbl[0] for tbl in self.tablelist )
             model.setStringList(strings)
             self.ui.tablesList.setModel(model)
-    
+            codegen = CodeGen()
+            codegen.connection = self.connection
+            codegen.get_tables_structure()
+            codegen.generate_table(self.tablelist[0][0])
+
+
     def __init__(self):
         QMainWindow.__init__(self)
         self.ui = ui_mainwindow.Ui_MainWindow()

@@ -7,6 +7,8 @@ Created on Oct 31, 2011
 from PySide.QtGui import *
 from PySide.QtCore import *
 
+from my2ca.codegen.codegen import codegen
+
 from my2ca.mysqlcon import mysqlconmanager
 
 from my2ca.ui.ui_select_tables_page import Ui_selectTablesPage
@@ -16,12 +18,6 @@ from my2ca.ui.ui_preview_page import Ui_previewPage
 connection = None
 available_tables = None
 selected_tables = None
-
-def set_connection(con):
-    connection = con
-    available_tables = mysqlconmanager.get_table_list(connection)
-    selected_tables = []
-    pass
 
 
 class SelectTablesPage(QWizardPage):
@@ -36,7 +32,9 @@ class SelectTablesPage(QWizardPage):
         self.ui.removeButton.clicked.connect(self.remove)
         self.ui.removeAllButton.clicked.connect(self.removeAll)
         
-        
+        model = QStringListModel()
+        model.setStringList(codegen.tables.values())
+        self.ui.availableTableList.setModel(model)
         pass
     
     def add(self):

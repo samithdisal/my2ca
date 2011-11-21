@@ -13,25 +13,25 @@ import conpool
 
 from entity import entity
 
-class ${entity_name}(entity):
+class ${t.name}(entity):
     """
-    ${entity_name} data entity class
+    ${t.name} data entity class
     """
     
-    __ca_cf = "${entity_name}"
+    __ca_cf = "${t.name}"
     __ca_cf = 
     
-    % for col in cols:
+    % for col in t.cols:
     ${makecol(col)}
     % endfor
     def __init__(self):
         entity.__init__(self)
     
-    ${makeinsert(cols)}
+    ${makeinsert(t.cols)}
     ${makeremove()}
     
 <%def name="makecol(col)">
-    self.${col.name} = ${col.datatype}(${col.typeargs})
+    self.${col.name} = ${col.type}(${col.typeargs})
 </%def>
 <%def name="makeinsert(cols)">
     """
