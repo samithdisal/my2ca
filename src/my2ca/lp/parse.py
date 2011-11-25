@@ -14,10 +14,15 @@ from sqlparse.tokens import DML
 class SQLCol:
     name = str()
     type = str()
+    pytype = str()
+    custype = str()
     typeargs = {}
+    pytypeargs = str()
     indexed = False
     pk = False
     null = True
+    fk_cf = None
+    fk_col = None
     
     pass
 
@@ -87,11 +92,23 @@ def convert_sql_table(createsql):
         fil.name = f.fieldname
         fil.type = f.fieldtype
         tbl.cols.append(fil)
-        print f.fieldname, " => ", f.fieldtype
+        pass
+    
+    field_dict = dict(list((f.name,f) for f in tbl.cols))
+    
+    for c in tokens.constraints:
+        field_dict.get(c.foriegn_key).indexed = True
+        field_dict.get(c.foriegn_key).fk_cf = c.ref_table
+        field_dict.get(c.foriegn_key).fk_field = c.ref_table_field
+        pass
+    
+    for k in tokens.pks:
+        field_dict.get(k).pk = True
         pass
     
     tbl.pks = tokens.pks
-    print tbl.pks.pks
+    
+    tbl.cols = field_dict.values()
     
     return tbl
 
@@ -111,4 +128,4 @@ def convert_sql(query):
 
 
 if __name__ == '__main__':
-    convert_sql_table("""CREATE TABLE `SaleTransaction` (`id` bigint(20) NOT NULL AUTO_INCREMENT,`amount` bigint(20) DEFAULT NULL,`datetime` date NOT NULL, `acount_accountId` varchar(255) DEFAULT NULL,`cd_id` bigint(20) DEFAULT NULL,`customer_customerId` varchar(255) DEFAULT NULL,PRIMARY KEY (`id`),KEY `FK42944FF76AED1F08` (`acount_accountId`),KEY `FK42944FF7ED21FE54` (`customer_customerId`),KEY `FK42944FF7A990C8F6` (`cd_id`),CONSTRAINT `FK42944FF76AED1F08` FOREIGN KEY (`acount_accountId`) REFERENCES `Account` (`accountId`),CONSTRAINT `FK42944FF7A990C8F6` FOREIGN KEY (`cd_id`) REFERENCES `CD` (`id`),CONSTRAINT `FK42944FF7ED21FE54` FOREIGN KEY (`customer_customerId`) REFERENCES `Customer` (`customerId`)) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8""")
+    convert_sql_table("""""")

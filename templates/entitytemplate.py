@@ -19,7 +19,7 @@ class ${t.name}(entity):
     """
     
     __ca_cf = "${t.name}"
-    __ca_cf = 
+    __ca_hash = None
     
     % for col in t.cols:
     ${makecol(col)}
@@ -31,14 +31,52 @@ class ${t.name}(entity):
     ${makeremove()}
     
 <%def name="makecol(col)">
-    self.${col.name} = ${col.type}(${col.typeargs})
+    
+    """ Column ${col.name} """
+    % if col.fk:
+    _${col.name} = None
+    % elseif:
+    _${col.name} = ${col.pytype}(${col.pytypeargs})
+    % endif
+    
+    def set_${col.name}(self, value):
+        """
+        Set ${col.name} value to 'value'
+        """
+        % if col.fk:
+        self._${col.name} = value.__ca_hash
+        % else:
+        self._${col.name} = value
+        % endif
+        pass
+    
+    def get_${col.name}(self):
+        """
+        Get ${col.name} value
+        """
+        % if col.fk:
+        temp = ${col.name}.get(self.${col.name})
+        % else:
+        return self._${col.name}
+        % endif
+    
+    % if col.indexed:
+    @classmethod
+    def find_by_${col.name}(val):
+        ${col.name}_expr = pycassa.create_index_expression('${col.name}', val)
+        clause = pycassa.create_index_clause([${col.name}_expr])
+        result = users.get_indexed_slices(clause)
+        result_list = list(${col.name}.get(f[' for f in result)
+        return 
+    % endif
 </%def>
+
 <%def name="makeinsert(cols)">
-    """
-    Default Insert/Update Method
-    Call this after an update or after creating an object
-    """
+    
     def persist(self):
+        """
+        Default Insert/Update Method Call this after an update or after creating an object
+        """
         if self.__ca_hash == None:
             self.__ca_hash == uuid.uuid4()
             #triggers specially for pre insert
@@ -72,12 +110,14 @@ class ${t.name}(entity):
         
         #-------------------------
         pass
+    
 </%def>
 <%def name="makeremove()">
-    """
-    Default Remove Method
-    """
+    
     def remove(self):
+        """
+        Default Remove Method
+        """
         if self.__ca_hash == None:
             #the object is not persisted so nothing to remove anyway
             return False
@@ -95,4 +135,34 @@ class ${t.name}(entity):
         
         #---------------------------
         return True
+    
+</%def>
+<%def name="construct(t)">
+    
+    def __init__(self):
+        """
+        Default Constructor Method
+        """
+        pass
+    
+</%def>
+<%def name="get(t)">
+    
+    @classmethod
+    def get(id):
+        """
+        Get by hashcode
+        """
+        cf = pycassa.ColumnFamily(conpool.connection_pool, self.__ca_cf)
+        res = cf.get(id)
+        
+        t = ${t.name}()
+        t.__ca_hash = id
+        
+        % for c in t.cols:
+            t.set_${c.name}(res.get(${c.name}))
+        % endfor
+        
+        return t
+    
 </%def>

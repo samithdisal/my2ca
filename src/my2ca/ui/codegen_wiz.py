@@ -34,7 +34,7 @@ class SelectTablesPage(QWizardPage):
         
         model = QStringListModel()
         model.setStringList(codegen.tables.values())
-        self.ui.availableTableList.setModel(model)
+        #self.ui.availableTableList.setModel(model)
         pass
     
     def add(self):

@@ -29,7 +29,7 @@ class Col:
 '''
 Template Lookup Directories and Include paths.
 '''
-template_lookup_dir = mako.lookup.TemplateLookup(directories=['../../templates'],
+template_lookup_dir = mako.lookup.TemplateLookup(directories=['../../templates','../../../templates',],
                                                  module_directory='../../generated_output',
                                                  output_encoding='utf-8')
 
