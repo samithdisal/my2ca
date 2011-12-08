@@ -7,10 +7,11 @@ Created on Nov 21, 2011
 import pydoc
 import os
 from my2ca.codegen.templating import render_template
+import shutil
 
 _input_folder = "generated_code"
 _output_folder = "generated_doc"
-_readme_file = os.path.join([_output_folder,"README"])
+_readme_file = _output_folder + "/README";
 
 def generate_doc():
     """
@@ -23,13 +24,13 @@ def generate_doc():
         os.makedirs(_output_folder)
         pass
     else:
-        os.rmdir(_output_folder)
+        shutil.rmtree(_output_folder)
         os.makedirs(_output_folder)
         pass
     
     pydoc.writedocs(_output_folder, _input_folder)
     readme = render_template("README_DOC")
-    readme_file = file(_readme_file)
+    readme_file = file(_readme_file, "w")
     readme_file.write(readme)
     return True
 

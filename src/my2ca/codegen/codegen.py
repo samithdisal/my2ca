@@ -38,7 +38,7 @@ class CodeGen:
         
         tbllist = []
         
-        for tbl, in get_table_list(self.connection):
+        for tbl in get_table_list(self.connection):
             tbllist.append((tbl,convert_sql_table((get_table_info(self.connection, tbl)))))
             pass
         self.tables = dict(tbllist)
@@ -87,6 +87,12 @@ class CodeGen:
         f.flush()
         f.close()
         
+        f = open(_get_path("structure.cql"),"w")
+        
+        f.write(self.export_ca_model())
+        f.flush()
+        f.close()
+        
         f = open(_get_path("entity.py"),"w")
         
         f.write(render_template("entity.py", 
@@ -103,6 +109,9 @@ class CodeGen:
             pass
         pass
     
+    def select_all(self):
+        self.selected_table = self.tables.values()
+        pass
     
     def generate_table_by_name(self, table_name):
         content = self.tables.get(table_name)

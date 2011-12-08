@@ -1,0 +1,8 @@
+==== README ====
+This files are generated using my2ca tool. 
+To start with please move the generated files to your application context.
+Edit the connection_pool.py to fit in to your needs. 
+Please store the user authentication details in secure place.
+
+Note that this may or may not work out of the box as my2ca does not know the actual purpose of the tables.
+The primary keys are not anymore there, everything is indexed by a UUID. But a seperate indexes are provided to find records by keys.

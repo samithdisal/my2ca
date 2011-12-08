@@ -102,7 +102,7 @@ def convert_sql_table(createsql):
         field_dict.get(c.foriegn_key).fk_field = c.ref_table_field
         pass
     
-    for k in tokens.pks:
+    for k in tokens.pks.pks:
         field_dict.get(k).pk = True
         pass
     

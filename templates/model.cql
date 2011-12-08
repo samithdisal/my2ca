@@ -12,6 +12,6 @@ ${col(c)}
 
 </%def>
 
-<%def name="col(col)>
+<%def name="col(col)">
 {column_name: ${col.name}, validation_class: ${col.custype}},
 </%def>

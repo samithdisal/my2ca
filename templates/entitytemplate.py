@@ -35,7 +35,7 @@ class ${t.name}(entity):
     """ Column ${col.name} """
     % if col.fk:
     _${col.name} = None
-    % elseif:
+    % elif:
     _${col.name} = ${col.pytype}(${col.pytypeargs})
     % endif
     

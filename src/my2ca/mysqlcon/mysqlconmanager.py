@@ -19,7 +19,7 @@ def get_table_list(connection):
     query = """SHOW TABLES;"""
     c = connection.cursor()
     c.execute(query)
-    res = c.fetchall()
+    res = c.fetchall()[0]
     print res
     return res
 

@@ -9,6 +9,7 @@ from PySide import QtUiTools
 from my2ca.mysqlcon import mysqlconmanager
 from my2ca.ui import ui_mainwindow, codegen_wiz, ui_connectMySqlDlg
 from my2ca.codegen.codegen import codegen, CodeGen
+from my2ca.docgen import docgen
 
 class ConnectMySqlDlg(QDialog):
     
@@ -36,9 +37,15 @@ class MainWindow(QMainWindow):
     connection = None
     
     def generate_code(self):
-        codegen_wiz.connection = self.connection
-        wiz = codegen_wiz.CodegenWiz(self)
-        wiz.run()
+        if self.connection == None:
+            pass
+#        codegen_wiz.connection = self.connection
+#        wiz = codegen_wiz.CodegenWiz(self)
+#        wiz.run()
+        codegen.select_all()
+        codegen.generate_code()
+        docgen.generate_doc()
+        QMessageBox.information(self,"Generate","Generation Succesful")
         pass
     
     def generate_doc(self):
@@ -68,7 +75,6 @@ class MainWindow(QMainWindow):
             codegen = CodeGen()
             codegen.connection = self.connection
             codegen.get_tables_structure()
-            codegen.generate_table(self.tablelist[0][0])
 
 
     def __init__(self):

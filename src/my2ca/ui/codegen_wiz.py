@@ -38,9 +38,11 @@ class SelectTablesPage(QWizardPage):
         pass
     
     def add(self):
+        codegen.select_table(self.ui.availableTableList.selectedItems()[0][0])
         pass
     
     def addAll(self):
+        codegen.select_table(codegen.tables.values())
         pass
     
     def remove(self):
