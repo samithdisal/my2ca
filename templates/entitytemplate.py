@@ -33,9 +33,9 @@ class ${t.name}(entity):
 <%def name="makecol(col)">
     
     """ Column ${col.name} """
-    % if col.fk:
+    % if col.fk_cf:
     _${col.name} = None
-    % elif:
+    % else:
     _${col.name} = ${col.pytype}(${col.pytypeargs})
     % endif
     
@@ -43,7 +43,7 @@ class ${t.name}(entity):
         """
         Set ${col.name} value to 'value'
         """
-        % if col.fk:
+        % if col.fk_cf:
         self._${col.name} = value.__ca_hash
         % else:
         self._${col.name} = value
@@ -54,7 +54,7 @@ class ${t.name}(entity):
         """
         Get ${col.name} value
         """
-        % if col.fk:
+        % if col.fk_cf:
         temp = ${col.name}.get(self.${col.name})
         % else:
         return self._${col.name}
@@ -78,7 +78,7 @@ class ${t.name}(entity):
         Default Insert/Update Method Call this after an update or after creating an object
         """
         if self.__ca_hash == None:
-            self.__ca_hash == uuid.uuid4()
+            self.__ca_hash = uuid.uuid4()
             #triggers specially for pre insert
             #---------------------
             
@@ -88,6 +88,7 @@ class ${t.name}(entity):
             #---------------------
             
             #---------------------
+            pass
         
         cf = pycassa.ColumnFamily(conpool.connection_pool, self.__ca_cf)
         

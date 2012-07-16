@@ -10,8 +10,17 @@ import pycassa
 Please use another mechanism to handle these data
 '''
 keyspace = "${keyspace}"
+% if servers:
 servers = ${servers}
+% else:
+servers = ['localhost:9960',]
+% endif
+
+% if credentials:
 credentials = ${credentials}
+% else:
+credentials = "testuser:nopass"
+% endif
 
 """
 The Connection Pool

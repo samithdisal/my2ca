@@ -49,37 +49,39 @@ def _strip(s,loc,tok):
     return res
 
 def convert_sql_table(createsql):
+    
+    print createsql
     tbl = SQLTable()
     
     paranths = Forward()
     paranths << "(" + ZeroOrMore(CharsNotIn("()") | paranths) + ")"
     
-    idt = Word("`",alphanums + "`").setName("simple_identifier")
+    idt = Word("`",alphanums + "`" + "_").setName("simple_identifier")
     
     idt.addParseAction(_strip)
     
-    pk_def = Group(Literal("PRIMARY") + "KEY" + "(" + delimitedList(idt).setResultsName("pks") + ")")
+    pk_def = Group(Keyword("PRIMARY KEY") + "(" + delimitedList(idt).setResultsName("pks") + ")")
     
-    key_def = Group(Literal("KEY") + idt.setResultsName("key_id") + "(" + idt.setResultsName("key_name") + ")" ).setResultsName("key")
+    key_def = Group(Keyword("KEY") + idt.setResultsName("key_id") + "(" + idt.setResultsName("key_name") + ")" ).setResultsName("key")
     
     key_list_def = Group(delimitedList(key_def, ","))
     
-    constraint_def = Group(Literal("CONSTRAINT") + idt.setResultsName("constraint_id") + "FORIEGN" + "KEY"
-                           + "(" + idt.setResultsName("foriegn_key") + "REFERENCES" + idt.setResultsName("ref_table") 
+    constraint_def = Group(Keyword("CONSTRAINT") + idt.setResultsName("constraint_id") + Keyword("FORIEGN KEY")
+                           + "(" + idt.setResultsName("foriegn_key") + ")" + Keyword("REFERENCES") + idt.setResultsName("ref_table") 
                            + "(" + idt.setResultsName("ref_table_field") + ")").setResultsName("constraint")
     
     constraint_list_def = Group(delimitedList(constraint_def, ","))
     
     field_def = Group(idt.setResultsName("fieldname") + Word(alphas).setResultsName("fieldtype") 
-                      + Optional(paranths) + Optional(Literal("NOT") + "NULL") + Optional(Literal("DEFAULT") + "NULL") + Optional(Literal("AUTO_INCREMENT"))).setResultsName("field")
+                      + Optional(paranths) + Optional(Literal("NULL")) + Optional(Literal("NOT") + "NULL") + Optional(Literal("DEFAULT") + "NULL") + Optional(Literal("AUTO_INCREMENT"))).setResultsName("field")
     
     field_list_def = Group(delimitedList(field_def, ","))
     
     
     
     create_table_def = (Literal("CREATE") + "TABLE" + idt.setResultsName("tablename") 
-                        + "(" + field_list_def.setResultsName("fields") + "," + pk_def.setResultsName("pks")
-                        + Optional("," + key_list_def.setResultsName("keys") + "," + constraint_list_def.setResultsName("constraints"))
+                        + "(" + field_list_def.setResultsName("fields") + Optional(",") + Optional(pk_def.setResultsName("pks"))
+                        + Optional(",") + Optional(key_list_def.setResultsName("keys")) + Optional(",") + Optional(constraint_list_def.setResultsName("constraints"))
                         + ")" + ZeroOrMore(Word(alphanums + "=")))
     
     tokens = create_table_def.parseString(createsql)
@@ -128,4 +130,4 @@ def convert_sql(query):
 
 
 if __name__ == '__main__':
-    convert_sql_table("""""")
+    convert_sql_table("""CREATE TABLE `Account` ( `accountId` varchar(255) NOT NULL, `balance` bigint(20) NOT NULL, `customer_customerId` varchar(255) DEFAULT NULL, PRIMARY KEY (`accountId`), KEY `FK1D0C220DED21FE54` (`customer_customerId`), CONSTRAINT `FK1D0C220DED21FE54` FOREIGN KEY (`customer_customerId`) REFERENCES `Customer` (`customerId`) ) ENGINE=InnoDB DEFAULT CHARSET=utf8""")

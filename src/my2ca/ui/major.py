@@ -42,6 +42,7 @@ class MainWindow(QMainWindow):
 #        codegen_wiz.connection = self.connection
 #        wiz = codegen_wiz.CodegenWiz(self)
 #        wiz.run()
+        
         codegen.select_all()
         codegen.generate_code()
         docgen.generate_doc()
@@ -69,11 +70,10 @@ class MainWindow(QMainWindow):
                 return
             self.tablelist = mysqlconmanager.get_table_list(self.connection)
             model = QStringListModel()
-            strings = list( tbl[0] for tbl in self.tablelist )
-            model.setStringList(strings)
+            model.setStringList(self.tablelist)
             self.ui.tablesList.setModel(model)
-            codegen = CodeGen()
             codegen.connection = self.connection
+            codegen.keyspace = c['database']
             codegen.get_tables_structure()
 
 
