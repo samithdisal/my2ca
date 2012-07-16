@@ -2,3 +2,5 @@
 .pydevproject
 .settings/*
 generated_output/*
+install/*
+.idea/*

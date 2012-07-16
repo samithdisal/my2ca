@@ -22,6 +22,16 @@ class ConnectMySqlDlg(QDialog):
         self.exec_()
     
     def get_details(self):
+
+        """Validate"""
+
+        host = self.ui.hostE.text()
+        if host == "":
+            pass
+
+        user = self.ui.userE.text()
+
+
         details = {'host':self.ui.hostE.text(),
                    'user':self.ui.userE.text(),
                    'password':self.ui.passE.text(),
