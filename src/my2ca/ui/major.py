@@ -27,17 +27,22 @@ class ConnectMySqlDlg(QDialog):
 
         host = self.ui.hostE.text()
         if host == "":
-            pass
+            raise Exception('Host cannot be empty')
 
         user = self.ui.userE.text()
+        if user=="":
+            raise Exception('User cannot be empty')
 
+        database = self.ui.dbE.text()
+        if database=="":
+            raise Exception('Database name cannot be empty')
 
-        details = {'host':self.ui.hostE.text(),
+        details = {'host':host,
                    'user':self.ui.userE.text(),
                    'password':self.ui.passE.text(),
                    'database':self.ui.dbE.text(),
                    'port':self.ui.portE.text(),}
-        return details;
+        return details
 
 
 
@@ -45,6 +50,8 @@ class ConnectMySqlDlg(QDialog):
 class MainWindow(QMainWindow):
     
     connection = None
+
+    messageBox = None
     
     def generate_code(self):
         if self.connection == None:
@@ -69,15 +76,24 @@ class MainWindow(QMainWindow):
         dlg = ConnectMySqlDlg()
         dlg.run()
         if dlg.result():
-            c = dlg.get_details()
-            self.connection = mysqlconmanager.connect(c['host'],
-                                                      c['user'],
-                                                      c['password'],
-                                                      c['database'],
-                                                      int(c['port']))
-            if self.connection == None:
-                QMessageBox.warning(self, "Connect to Database","Connection Failed")
+            try:
+                c = dlg.get_details()
+            except Exception as e:
+                QMessageBox.critical(self,"Open MySQL", e.message)
                 return
+
+
+            try:
+
+                self.connection = mysqlconmanager.connect(c['host'],
+                                                          c['user'],
+                                                          c['password'],
+                                                          c['database'],
+                                                          int(c['port']))
+            except Exception as e:
+                QMessageBox.critical(self, "Open MySQL", e.message)
+                return
+
             self.tablelist = mysqlconmanager.get_table_list(self.connection)
             model = QStringListModel()
             model.setStringList(self.tablelist)
@@ -93,6 +109,7 @@ class MainWindow(QMainWindow):
         self.ui.setupUi(self)
         self.ui.connectButton.clicked.connect(self.connect_mysql)
         self.ui.codegenButton.clicked.connect(self.generate_code)
+        self.messageBox = QMessageBox(self)
     
     def run(self):
         self.show()

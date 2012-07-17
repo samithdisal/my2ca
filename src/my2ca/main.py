@@ -46,6 +46,8 @@ if __name__ == '__main__':
         c_user = sys.argv[5]
         if len(sys.argv) == 7:
             c_password = sys.argv[6]
+        else:
+            c_password = ""
             pass
         
         from my2ca.mysqlcon.mysqlconmanager import connect
@@ -55,7 +57,7 @@ if __name__ == '__main__':
         from my2ca.codegen.codegen import codegen
         
         codegen.connection = connection
-        codegen.keyspace = c_db;
+        codegen.keyspace = c_db
         codegen.get_tables_structure()
         codegen.select_all()
         codegen.export_ca_model()

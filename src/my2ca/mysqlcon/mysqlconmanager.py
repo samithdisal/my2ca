@@ -12,7 +12,9 @@ def connect(host, username, password, db, port):
         return connection
     except MySQLdb.Error,e:
         print "Error: Connection Failed to the server: %s" % (e.args[1])
-        return None
+        raise Exception(e.args[1])
+    pass
+
 
 def get_table_list(connection):
     
