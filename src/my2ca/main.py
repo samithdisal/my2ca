@@ -17,7 +17,11 @@ def _print_usage():
 if __name__ == '__main__':
     
     import sys
-    
+    if len(sys.argv) < 2:
+        # No arguments passed. lets print the usage and exit
+        _print_usage()
+        exit(0)
+        pass
     arg = sys.argv[1]
     
     
