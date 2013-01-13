@@ -6,3 +6,5 @@ generated_code/*
 generated_doc/*
 install/*
 .idea/*
+*.pyc
+build/
