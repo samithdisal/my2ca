@@ -73,7 +73,9 @@ def convert_sql_table(createsql):
     constraint_list_def = Group(delimitedList(constraint_def, ","))
     
     field_def = Group(idt.setResultsName("fieldname") + Word(alphas).setResultsName("fieldtype") 
-                      + Optional(paranths) + Optional(Literal("NULL")) + Optional(Literal("NOT") + "NULL") + Optional(Literal("DEFAULT") + "NULL") + Optional(Literal("AUTO_INCREMENT"))).setResultsName("field")
+                      + Optional(paranths)
+                      + Optional(ZeroOrMore(idt+Optional(paranths)))
+                      + Optional(Word('\''+alphanums))).setResultsName("field")
     
     field_list_def = Group(delimitedList(field_def, ","))
     
