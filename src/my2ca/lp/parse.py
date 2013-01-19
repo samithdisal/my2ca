@@ -10,6 +10,9 @@ from pyparsing import *
 import sqlparse
 from sqlparse.tokens import DML
 
+# Regular expression library
+import re
+
 
 class SQLCol:
     name = str()
@@ -23,7 +26,13 @@ class SQLCol:
     null = True
     fk_cf = None
     fk_col = None
-    
+
+    def __unicode__(self):
+        return self.name + ":" + self.type + ":" + self.typeargs
+
+    def __str__(self):
+        return self.__unicode__()
+
     pass
 
 class SQLTable:
@@ -50,70 +59,33 @@ def _strip(s,loc,tok):
 
 def convert_sql_table(createsql):
     
-    print createsql
+    #print createsql
     tbl = SQLTable()
-    
-    paranths = Forward()
-    paranths << "(" + ZeroOrMore(CharsNotIn("()") | paranths) + ")"
-    
-    idt = Word("`",alphanums + "`" + "_").setName("simple_identifier")
-    
-    idt.addParseAction(_strip)
-    
-    pk_def = Group(Keyword("PRIMARY KEY") + "(" + delimitedList(idt).setResultsName("pks") + ")")
-    
-    key_def = Group(Keyword("KEY") + idt.setResultsName("key_id") + "(" + idt.setResultsName("key_name") + ")" ).setResultsName("key")
-    
-    key_list_def = Group(delimitedList(key_def, ","))
-    
-    constraint_def = Group(Keyword("CONSTRAINT") + idt.setResultsName("constraint_id") + Keyword("FORIEGN KEY")
-                           + "(" + idt.setResultsName("foriegn_key") + ")" + Keyword("REFERENCES") + idt.setResultsName("ref_table") 
-                           + "(" + idt.setResultsName("ref_table_field") + ")").setResultsName("constraint")
-    
-    constraint_list_def = Group(delimitedList(constraint_def, ","))
-    
-    field_def = Group(idt.setResultsName("fieldname") + Word(alphas).setResultsName("fieldtype") 
-                      + Optional(paranths)
-                      + Optional(ZeroOrMore(idt+Optional(paranths)))
-                      + Optional(Word('\''+alphanums))).setResultsName("field")
-    
-    field_list_def = Group(delimitedList(field_def, ","))
-    
-    
-    
-    create_table_def = (Literal("CREATE") + "TABLE" + idt.setResultsName("tablename") 
-                        + "(" + field_list_def.setResultsName("fields") + Optional(",") + Optional(pk_def.setResultsName("pks"))
-                        + Optional(",") + Optional(key_list_def.setResultsName("keys")) + Optional(",") + Optional(constraint_list_def.setResultsName("constraints"))
-                        + ")" + ZeroOrMore(Word(alphanums + "=")))
-    
-    tokens = create_table_def.parseString(createsql)
-    
-    tbl.name = tokens.tablename
-    
-    print tokens.tablename
-    for f in tokens.fields:
-        fil = SQLCol()
-        fil.name = f.fieldname
-        fil.type = f.fieldtype
-        tbl.cols.append(fil)
+
+    id_lit = r'`[a-z][A-Z][0-9]_'
+    match = re.search(r'CREATE\s+TABLE\s+`(\w+)`\s*\(\s*(.*)\s*\)\s*ENGINE=(\w+)\s+DEFAULT\s+CHARSET=(\w+)\s*', createsql)
+    if match:
+        print match.group()
+        print 'Table Name is '+match.group(1)
+        print 'Body is ' + match.group(2)
+        print 'Engine is ' + match.group(3)
+        print 'Char Set is ' + match.group(4)
+
+        bodymatch = re.findall(r'\s*`(\w+)`\s+(\w+)(\((\d+)\))?[\s\w]*,*', match.group(2))
+        keymatch = re.findall(r'\s+PRIMARY\s+KEY\s+\(`(\w+)`\),', match.group(2))
+        print bodymatch
+        print keymatch
+        cols = dict()
+        for bm in bodymatch:
+            col = SQLCol()
+            col.name = bm[0]
+            col.type = bm[1]
+            if bm[2]:
+                col.typeargs = bm[2]
+                pass
+            print col
+            pass
         pass
-    
-    field_dict = dict(list((f.name,f) for f in tbl.cols))
-    
-    for c in tokens.constraints:
-        field_dict.get(c.foriegn_key).indexed = True
-        field_dict.get(c.foriegn_key).fk_cf = c.ref_table
-        field_dict.get(c.foriegn_key).fk_field = c.ref_table_field
-        pass
-    
-    for k in tokens.pks.pks:
-        field_dict.get(k).pk = True
-        pass
-    
-    tbl.pks = tokens.pks
-    
-    tbl.cols = field_dict.values()
-    
     return tbl
 
 
