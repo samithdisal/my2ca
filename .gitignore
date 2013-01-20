@@ -5,6 +5,3 @@ install/*
 .idea/*
 *.pyc
 build/
-generated_output/
-generated_code/
-generated_doc/
