@@ -15,6 +15,7 @@ import sys
 import shutil
 import re
 import MySQLdb
+import threading
 
 ###################################################################
 ## MySQL Connection Specific
@@ -202,6 +203,10 @@ class CodeGen:
 		self.statusCallback = callback
 		pass
 	
+    def unsetStatusCallback(self):
+		self.statusCallback = None
+		pass
+	
     def statusReport(self, message):
 		if self.statusCallback:
 			self.statusCallback(message)
@@ -266,7 +271,6 @@ class CodeGen:
         count += 1
         self.statusReport("Created connection pool: " + _get_path("conpool.py"))
         
-
         f = open(_get_path("structure.cql"),"w")
 
         f.write(self.export_ca_model())
@@ -404,9 +408,14 @@ class ProgressPage(QWizardPage):
 	
     def generate(self):
 		codegen.setStatusCallback(self.logm)
-		codegen.generate_code()
+		cg_thread = threading.Thread(target=self.generate_thread)
+		cg_thread.start()
 		pass
-	
+    
+    def generate_thread(self):
+		codegen.generate_code()
+		codegen.unsetStatusCallback()
+		pass
     pass
 
 class FinalizePage(QWizardPage):
