@@ -609,21 +609,15 @@ class My2Ca:
                 c_password = ""
                 pass
 
-            from my2ca.mysqlcon.mysqlconmanager import connect
-
-            connection = connect(c_host, c_user, c_password, c_db, c_port)
-
-            from my2ca.codegen.codegen import codegen
+            connection = mysqlconnect.connect(c_host, c_user, c_password, c_db, c_port)
+            
+            codegen = CodeGen()
 
             codegen.connection = connection
             codegen.keyspace = c_db
             codegen.get_tables_structure()
             codegen.select_all()
-            codegen.export_ca_model()
             codegen.generate_code()
-
-            from my2ca.docgen import docgen
-            docgen.generate_doc()
         pass
 
     def cmd_print_usage(self):
