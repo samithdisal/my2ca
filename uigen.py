@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Sun Jan 20 14:34:45 2013
+# Created: Tue Feb 12 12:43:47 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,7 +102,7 @@ class Ui_MainWindow(object):
 
 # Form implementation generated from reading ui file 'connectMySqlDlg.ui'
 #
-# Created: Sun Jan 20 14:34:45 2013
+# Created: Tue Feb 12 12:43:48 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -183,7 +183,7 @@ class Ui_connectMySqlDlg(object):
 
 # Form implementation generated from reading ui file 'select_tables_page.ui'
 #
-# Created: Sun Jan 20 14:34:45 2013
+# Created: Tue Feb 12 12:43:48 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -235,7 +235,7 @@ class Ui_selectTablesPage(object):
 
 # Form implementation generated from reading ui file 'preview_page.ui'
 #
-# Created: Sun Jan 20 14:34:45 2013
+# Created: Tue Feb 12 12:43:48 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -265,4 +265,35 @@ class Ui_previewPage(object):
 
     def retranslateUi(self, previewPage):
         previewPage.setWindowTitle(QtGui.QApplication.translate("previewPage", "Form", None, QtGui.QApplication.UnicodeUTF8))
+
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'progress_page.ui'
+#
+# Created: Tue Feb 12 12:43:48 2013
+#      by: pyside-uic 0.2.13 running on PySide 1.1.1
+#
+# WARNING! All changes made in this file will be lost!
+
+from PySide import QtCore, QtGui
+
+class Ui_progressPage(object):
+    def setupUi(self, progressPage):
+        progressPage.setObjectName("progressPage")
+        progressPage.resize(400, 300)
+        self.verticalLayout = QtGui.QVBoxLayout(progressPage)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.generateButton = QtGui.QPushButton(progressPage)
+        self.generateButton.setObjectName("generateButton")
+        self.verticalLayout.addWidget(self.generateButton)
+        self.generateLog = QtGui.QTextEdit(progressPage)
+        self.generateLog.setObjectName("generateLog")
+        self.verticalLayout.addWidget(self.generateLog)
+
+        self.retranslateUi(progressPage)
+        QtCore.QMetaObject.connectSlotsByName(progressPage)
+
+    def retranslateUi(self, progressPage):
+        progressPage.setWindowTitle(QtGui.QApplication.translate("progressPage", "WizardPage", None, QtGui.QApplication.UnicodeUTF8))
+        self.generateButton.setText(QtGui.QApplication.translate("progressPage", "Generate", None, QtGui.QApplication.UnicodeUTF8))
 
