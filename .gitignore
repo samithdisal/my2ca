@@ -7,3 +7,4 @@ install/*
 build/
 .idea
 *~
+my2ca_setup.sh
