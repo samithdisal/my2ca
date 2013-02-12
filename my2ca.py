@@ -16,6 +16,8 @@ import shutil
 import re
 import MySQLdb
 import threading
+import py_compile
+import glob
 
 ###################################################################
 ## MySQL Connection Specific
@@ -298,9 +300,25 @@ class CodeGen:
             count += 1
             pass
         self.statusReport("Generated " + str(count) + " files")
-        self.statusReport("Code generation completed")
+        
+        self.statusReport("Testing generated code for syntax errors")
+        status_passed = True;
+        for file in glob.glob(_output_dir+"/*.py"):
+            self.statusReport("Lint " + file )
+            try:
+                py_compile.compile(_output_dir+"/"+file)
+            except py_compile.PyCompileError:
+                self.statusReport(file + " Failed")
+                status_passed = False
+                pass
+            pass
+        if status_passed:
+            self.statusReport("Test completed")
+        else:
+            self.statusReport("Test failed")
+            pass
         pass
-
+    
     def select_all(self):
         self.selected_table = self.tables.values()
         pass
