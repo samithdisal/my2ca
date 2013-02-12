@@ -202,20 +202,20 @@ class CodeGen:
     statusCallback = None #callback(self, message)
     
     def setStatusCallback(self, callback):
-		self.statusCallback = callback
-		pass
-	
+        self.statusCallback = callback
+        pass
+    
     def unsetStatusCallback(self):
-		self.statusCallback = None
-		pass
-	
+        self.statusCallback = None
+        pass
+    
     def statusReport(self, message):
-		if self.statusCallback:
-			self.statusCallback(message)
-			pass
-		print message
-		pass
-	
+        if self.statusCallback:
+            self.statusCallback(message)
+            pass
+        print message
+        pass
+    
     def get_tables_structure(self):
 
         tbllist = []
@@ -371,11 +371,16 @@ class SelectTablesPage(QWizardPage):
         model = QStringListModel()
         model.setStringList(codegen.tables.keys())
         self.ui.availableTableList.setModel(model)
+        self.selectedModel = QStringListModel()
+        self.selectedStringList = list()
+        self.selectedModel.setStringList(self.selectedStringList)
+        self.ui.selectedTableList.setModel(self.selectedModel)
         pass
 
     def add(self):
         try:
             codegen.select_table(self.ui.availableTableList.selectedIndexes()[0])
+            self.selectedStringList.append(self.ui.availableTableList.selectedIndexes()[0])
         except IndexError:
             QMessageBox.warning(self, 'Select Table', 'Please select a table first')
             pass
@@ -412,7 +417,7 @@ class PreviewCodePage(QWizardPage):
     pass
 
 class ProgressPage(QWizardPage):
-	
+    
     def __init__(self):
         QWizardPage.__init__(self)
         self.ui = Ui_progressPage()
@@ -421,19 +426,20 @@ class ProgressPage(QWizardPage):
         pass
     
     def logm(self, message):
-		self.ui.generateLog.append(message)
-		pass
-	
+        self.ui.generateLog.append(message)
+        pass
+    
     def generate(self):
-		codegen.setStatusCallback(self.logm)
-		cg_thread = threading.Thread(target=self.generate_thread)
-		cg_thread.start()
-		pass
+        codegen.setStatusCallback(self.logm)
+        cg_thread = threading.Thread(target=self.generate_thread)
+        cg_thread.start()
+        cg_thread.join()
+        pass
     
     def generate_thread(self):
-		codegen.generate_code()
-		codegen.unsetStatusCallback()
-		pass
+        codegen.generate_code()
+        codegen.unsetStatusCallback()
+        pass
     pass
 
 class FinalizePage(QWizardPage):
@@ -445,23 +451,23 @@ class FinalizePage(QWizardPage):
         pass
     
     def configure(self, location):
-		self.ui.locationLabel.setText(location)
-		pass
-    	
+        self.ui.locationLabel.setText(location)
+        pass
+        
     def initializePage(self):
-		self.configure(os.path.abspath(_output_dir))
-		pass
-	
+        self.configure(os.path.abspath(_output_dir))
+        pass
+    
     pass
 
 
 class CodegenWiz(QWizard):
 
     def run(self):
-		codegen.get_tables_structure()
-		self.exec_()
-		pass
-	
+        codegen.get_tables_structure()
+        self.exec_()
+        pass
+    
     def __init__(self, parent = None):
         QWizard.__init__(self, parent)
         self.selectTablePage = SelectTablesPage()
@@ -536,13 +542,7 @@ class MainWindow(QMainWindow):
 #        docgen.generate_doc()
 #        QMessageBox.information(self,"Generate","Generation Succesful")
         pass
-
-    def generate_doc(self):
-        pass
-
-    def test_code(self):
-        pass
-
+    
     def connect_mysql(self):
         dlg = ConnectMySqlDlg()
         dlg.run()
