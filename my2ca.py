@@ -320,13 +320,13 @@ class SelectTablesPage(QWizardPage):
         self.ui.removeAllButton.clicked.connect(self.removeAll)
 
         model = QStringListModel()
-        model.setStringList(codegen.tables.values())
+        model.setStringList(codegen.tables.keys())
         self.ui.availableTableList.setModel(model)
         pass
 
     def add(self):
         try:
-            codegen.select_table(self.ui.availableTableList.selectedItems()[0][0])
+            codegen.select_table(self.ui.availableTableList.selectedIndexes()[0])
         except IndexError:
             QMessageBox.warning(self, 'Select Table', 'Please select a table first')
             pass
