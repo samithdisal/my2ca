@@ -1,0 +1,57 @@
+#!/bin/bash -e
+CANCONTINUE=0
+PYTHON_INT="python2"
+
+cd my2ca_setup_temp
+if `command -v python2 > /dev/null`
+then
+  # python2 is there, lets use it
+  CANCONTINUE=1
+else
+  if `command -v python > /dev/null`
+  then
+    if `python --version | grep 2.7 > /dev/null`
+    then
+      # python is 2.7.x, so we can continue
+      CANCONTINUE=1
+      PYTHON_INT="python"
+    fi
+  fi
+fi
+
+if [ $CANCONTINUE -ne 1 ]
+then
+  echo "Python not found, we need python 2"
+  exit
+else
+  echo "Python found as "
+  echo $PYTHON_INT
+  
+  #check for previous installations
+  
+  if [ -d /usr/local/lib/my2ca ]
+  then
+    # lets clean them for now
+    rm /usr/local/bin/my2ca
+    rm -r /usr/local/lib/my2ca
+  fi
+  # copy files
+  mkdir /usr/local/lib/my2ca
+  
+  mv my2ca.py my2ca.temp
+  
+  echo "#!/usr/bin/env $PYTHON_INT" > my2ca.py
+  chmod +x my2ca.py
+  
+  cat uigen.py >> my2ca.py
+  cat my2ca.temp >> my2ca.py
+  rm my2ca.temp
+  
+  cp my2ca.py /usr/local/lib/my2ca/
+  cp -rf templates /usr/local/lib/my2ca/
+  ln -s /usr/local/lib/my2ca/my2ca.py /usr/local/bin/my2ca
+  echo "Setup completed"
+fi
+cd ..
+rm -rf my2ca_setup_temp
+

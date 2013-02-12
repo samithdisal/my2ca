@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+
 __author__ = 'samiths'
 
 ##
@@ -145,8 +145,8 @@ author = 'Unknown'
 '''
 Template Lookup Directories and Include paths.
 '''
-template_lookup_dir = mako.lookup.TemplateLookup(directories=['templates', '/usr/local/share/my2ca/templates', '/usr/share/my2ca/templates',],
-    module_directory='../.cache',
+template_lookup_dir = mako.lookup.TemplateLookup(directories=['templates', '/usr/local/share/my2ca/templates', '/usr/share/my2ca/templates', '/usr/local/lib/my2ca/templates',],
+    module_directory='./.cache',
     output_encoding='utf-8')
 
 
@@ -179,7 +179,7 @@ def gen_module(modulename, outpath, data):
 
 
 # Output dir location
-_output_dir = "../generated_code"
+_output_dir = "./generated_code"
 
 def _get_path(filename):
     return os.path.join(_output_dir,filename)
@@ -306,7 +306,7 @@ class CodeGen:
         for file in glob.glob(_output_dir+"/*.py"):
             self.statusReport("Lint " + file )
             try:
-                py_compile.compile(_output_dir+"/"+file)
+                py_compile.compile(file)
             except py_compile.PyCompileError:
                 self.statusReport(file + " Failed")
                 status_passed = False
@@ -344,7 +344,12 @@ def _get_date():
 
 ###################################################################
 ## UI Genered Content
-from uigen import *
+try:
+  from uigen import *
+except ImportError:
+  # this means we are in production mode
+  pass
+
 ###################################################################
 
 ###################################################################
@@ -653,3 +658,4 @@ my2ca = My2Ca()
 if __name__ == '__main__':
     my2ca.cmd_handle_main()
     pass
+

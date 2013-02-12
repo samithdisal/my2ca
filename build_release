@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ -d my2ca_setup_temp ]
+then
+	rm -rf my2ca_setup_temp
+	rm my2ca_setup.sh
+fi
+
+mkdir my2ca_setup_temp
+
+cp my2ca.py my2ca_setup_temp/
+cp uigen.py my2ca_setup_temp/
+
+cp -rf templates my2ca_setup_temp/
+
+cp my2ca_internal_setup.shtemplate my2ca_setup_temp/setup
+chmod +x my2ca_setup_temp/setup
+
+cp my2ca_setup.shtemplate my2ca_setup.sh
+chmod +x my2ca_setup.sh
+
+tar czf - my2ca_setup_temp >> my2ca_setup.sh
+
+rm -r my2ca_setup_temp

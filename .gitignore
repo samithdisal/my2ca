@@ -6,3 +6,4 @@ install/*
 *.pyc
 build/
 .idea
+*~
