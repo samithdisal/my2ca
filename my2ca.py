@@ -194,7 +194,21 @@ class CodeGen:
     credentials = str()
 
     connection = None
-
+    
+    # let us register a staus callback
+    statusCallback = None #callback(self, message)
+    
+    def setStatusCallback(self, callback):
+		self.statusCallback = callback
+		pass
+	
+    def statusReport(self, message):
+		if self.statusCallback:
+			self.statusCallback(message)
+			pass
+		print message
+		pass
+	
     def get_tables_structure(self):
 
         tbllist = []
@@ -227,7 +241,8 @@ class CodeGen:
         """
         Generate code for the selected tables
         """
-
+        count = 0
+        
         if os.path.exists(_output_dir):
             #if the dir exists removes the existing files/folders
             shutil.rmtree(_output_dir)
@@ -235,7 +250,9 @@ class CodeGen:
 
         #create folder
         os.makedirs(_output_dir)
-
+        
+        self.statusReport("Create output directory " + _output_dir)
+        
         f = open(_get_path("conpool.py"),"w")
 
         f.write(render_template("conpool.py",
@@ -246,12 +263,17 @@ class CodeGen:
             credentials = self.credentials))
         f.flush()
         f.close()
+        count += 1
+        self.statusReport("Created connection pool: " + _get_path("conpool.py"))
+        
 
         f = open(_get_path("structure.cql"),"w")
 
         f.write(self.export_ca_model())
         f.flush()
         f.close()
+        count += 1
+        self.statusReport("Created cassandra structure: " + _get_path("structure.cql"))
 
         f = open(_get_path("entity.py"),"w")
 
@@ -260,14 +282,19 @@ class CodeGen:
             date=_get_date()))
         f.flush()
         f.close()
+        count += 1
+        self.statusReport("Created base entity: " + _get_path("entity.py"))
 
         for ff in self.selected_table:
-            print "Generating Table : " + ff.name
+            self.statusReport("Generating table : " + ff.name)
             f = open(_get_path(ff.name + ".py"),"w")
             f.write(self.generate_table(ff))
             f.flush()
             f.close()
+            count += 1
             pass
+        self.statusReport("Generated " + str(count) + " files")
+        self.statusReport("Code generation completed")
         pass
 
     def select_all(self):
