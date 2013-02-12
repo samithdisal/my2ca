@@ -12,5 +12,5 @@ class entity:
         '''
         entity
         '''
-        break
-    break
+        pass
+    pass
