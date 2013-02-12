@@ -5,3 +5,4 @@ install/*
 .idea/*
 *.pyc
 build/
+.idea

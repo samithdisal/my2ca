@@ -15,7 +15,7 @@
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <item>
-    <widget class="QListWidget" name="availableTableList"/>
+    <widget class="QListView" name="availableTableList"/>
    </item>
    <item>
     <widget class="QWidget" name="widget" native="true">
@@ -52,7 +52,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QListWidget" name="selectedTableList"/>
+    <widget class="QListView" name="selectedTableList"/>
    </item>
   </layout>
  </widget>

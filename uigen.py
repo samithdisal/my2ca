@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Sun Jan 20 11:47:34 2013
+# Created: Sun Jan 20 14:34:45 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,7 +102,7 @@ class Ui_MainWindow(object):
 
 # Form implementation generated from reading ui file 'connectMySqlDlg.ui'
 #
-# Created: Sun Jan 20 11:47:34 2013
+# Created: Sun Jan 20 14:34:45 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -183,7 +183,7 @@ class Ui_connectMySqlDlg(object):
 
 # Form implementation generated from reading ui file 'select_tables_page.ui'
 #
-# Created: Sun Jan 20 11:47:34 2013
+# Created: Sun Jan 20 14:34:45 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -196,7 +196,7 @@ class Ui_selectTablesPage(object):
         selectTablesPage.resize(653, 399)
         self.horizontalLayout = QtGui.QHBoxLayout(selectTablesPage)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.availableTableList = QtGui.QListWidget(selectTablesPage)
+        self.availableTableList = QtGui.QListView(selectTablesPage)
         self.availableTableList.setObjectName("availableTableList")
         self.horizontalLayout.addWidget(self.availableTableList)
         self.widget = QtGui.QWidget(selectTablesPage)
@@ -217,7 +217,7 @@ class Ui_selectTablesPage(object):
         self.removeAllButton.setObjectName("removeAllButton")
         self.verticalLayout.addWidget(self.removeAllButton)
         self.horizontalLayout.addWidget(self.widget)
-        self.selectedTableList = QtGui.QListWidget(selectTablesPage)
+        self.selectedTableList = QtGui.QListView(selectTablesPage)
         self.selectedTableList.setObjectName("selectedTableList")
         self.horizontalLayout.addWidget(self.selectedTableList)
 
@@ -235,7 +235,7 @@ class Ui_selectTablesPage(object):
 
 # Form implementation generated from reading ui file 'preview_page.ui'
 #
-# Created: Sun Jan 20 11:47:34 2013
+# Created: Sun Jan 20 14:34:45 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!

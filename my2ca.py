@@ -20,9 +20,13 @@ import MySQLdb
 ## MySQL Connection Specific
 
 class MySQLConnect:
+
+    active_connection = None
+
     def connect(self, host, username, password, db, port):
         try:
             connection = MySQLdb.connect(host,username,password,db,port)
+            self.active_connection = connection
             return connection
         except MySQLdb.Error,e:
             print 'Error: Connection Failed to the server: %s' % (e.args[1])
@@ -79,6 +83,12 @@ class SQLTable:
     pks = []
     engine = "InnoDB"
     dcharset = "utf8"
+
+    def __str__(self):
+        return self.name
+
+    def __unicode__(self):
+        return  self.__str__()
 
     pass
 
@@ -293,7 +303,6 @@ from uigen import *
 
 from PySide.QtGui import *
 
-connection = None
 available_tables = None
 selected_tables = None
 
@@ -312,15 +321,22 @@ class SelectTablesPage(QWizardPage):
 
         model = QStringListModel()
         model.setStringList(codegen.tables.values())
-        #self.ui.availableTableList.setModel(model)
+        self.ui.availableTableList.setModel(model)
         pass
 
     def add(self):
-        codegen.select_table(self.ui.availableTableList.selectedItems()[0][0])
+        try:
+            codegen.select_table(self.ui.availableTableList.selectedItems()[0][0])
+        except IndexError:
+            QMessageBox.warning(self, 'Select Table', 'Please select a table first')
+            pass
         pass
 
     def addAll(self):
-        codegen.select_table(codegen.tables.values())
+        if len(codegen.tables) == 0:
+            QMessageBox.warning(self, 'Select Table', 'No tables to select')
+            return
+        codegen.select_all()
         pass
 
     def remove(self):
