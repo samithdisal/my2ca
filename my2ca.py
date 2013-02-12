@@ -390,11 +390,23 @@ class PreviewCodePage(QWizardPage):
     pass
 
 class ProgressPage(QWizardPage):
-
+	
     def __init__(self):
         QWizardPage.__init__(self)
+        self.ui = Ui_progressPage()
+        self.ui.setupUi(self)
+        self.ui.generateButton.clicked.connect(self.generate)
         pass
-
+    
+    def logm(self, message):
+		self.ui.generateLog.append(message)
+		pass
+	
+    def generate(self):
+		codegen.setStatusCallback(self.logm)
+		codegen.generate_code()
+		pass
+	
     pass
 
 class FinalizePage(QWizardPage):
@@ -404,6 +416,7 @@ class FinalizePage(QWizardPage):
         pass
 
     pass
+
 
 class CodegenWiz(QWizard):
 
