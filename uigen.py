@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'mainwindow.ui'
 #
-# Created: Tue Feb 12 12:43:47 2013
+# Created: Tue Feb 12 15:22:05 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -102,7 +102,7 @@ class Ui_MainWindow(object):
 
 # Form implementation generated from reading ui file 'connectMySqlDlg.ui'
 #
-# Created: Tue Feb 12 12:43:48 2013
+# Created: Tue Feb 12 15:22:05 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -183,7 +183,7 @@ class Ui_connectMySqlDlg(object):
 
 # Form implementation generated from reading ui file 'select_tables_page.ui'
 #
-# Created: Tue Feb 12 12:43:48 2013
+# Created: Tue Feb 12 15:22:05 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -235,7 +235,7 @@ class Ui_selectTablesPage(object):
 
 # Form implementation generated from reading ui file 'preview_page.ui'
 #
-# Created: Tue Feb 12 12:43:48 2013
+# Created: Tue Feb 12 15:22:06 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -270,7 +270,7 @@ class Ui_previewPage(object):
 
 # Form implementation generated from reading ui file 'progress_page.ui'
 #
-# Created: Tue Feb 12 12:43:48 2013
+# Created: Tue Feb 12 15:22:06 2013
 #      by: pyside-uic 0.2.13 running on PySide 1.1.1
 #
 # WARNING! All changes made in this file will be lost!
@@ -296,4 +296,46 @@ class Ui_progressPage(object):
     def retranslateUi(self, progressPage):
         progressPage.setWindowTitle(QtGui.QApplication.translate("progressPage", "WizardPage", None, QtGui.QApplication.UnicodeUTF8))
         self.generateButton.setText(QtGui.QApplication.translate("progressPage", "Generate", None, QtGui.QApplication.UnicodeUTF8))
+
+# -*- coding: utf-8 -*-
+
+# Form implementation generated from reading ui file 'finalize_page.ui'
+#
+# Created: Tue Feb 12 15:22:06 2013
+#      by: pyside-uic 0.2.13 running on PySide 1.1.1
+#
+# WARNING! All changes made in this file will be lost!
+
+from PySide import QtCore, QtGui
+
+class Ui_finalizePage(object):
+    def setupUi(self, finalizePage):
+        finalizePage.setObjectName("finalizePage")
+        finalizePage.resize(570, 425)
+        self.verticalLayout = QtGui.QVBoxLayout(finalizePage)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label = QtGui.QLabel(finalizePage)
+        self.label.setObjectName("label")
+        self.verticalLayout.addWidget(self.label)
+        self.label_2 = QtGui.QLabel(finalizePage)
+        self.label_2.setObjectName("label_2")
+        self.verticalLayout.addWidget(self.label_2)
+        self.locationLabel = QtGui.QLabel(finalizePage)
+        font = QtGui.QFont()
+        font.setPointSize(15)
+        self.locationLabel.setFont(font)
+        self.locationLabel.setOpenExternalLinks(True)
+        self.locationLabel.setObjectName("locationLabel")
+        self.verticalLayout.addWidget(self.locationLabel)
+        spacerItem = QtGui.QSpacerItem(20, 332, QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem)
+
+        self.retranslateUi(finalizePage)
+        QtCore.QMetaObject.connectSlotsByName(finalizePage)
+
+    def retranslateUi(self, finalizePage):
+        finalizePage.setWindowTitle(QtGui.QApplication.translate("finalizePage", "WizardPage", None, QtGui.QApplication.UnicodeUTF8))
+        self.label.setText(QtGui.QApplication.translate("finalizePage", "Your project is succesfully converted to PyCassa code", None, QtGui.QApplication.UnicodeUTF8))
+        self.label_2.setText(QtGui.QApplication.translate("finalizePage", "You can find the generated code at", None, QtGui.QApplication.UnicodeUTF8))
+        self.locationLabel.setText(QtGui.QApplication.translate("finalizePage", "LOCATION", None, QtGui.QApplication.UnicodeUTF8))
 

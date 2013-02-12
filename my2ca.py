@@ -413,21 +413,30 @@ class FinalizePage(QWizardPage):
 
     def __init__(self):
         QWizardPage.__init__(self)
+        self.ui = Ui_finalizePage()
+        self.ui.setupUi(self)
         pass
-
+    
+    def configure(self, location):
+		self.ui.locationLabel.setText(location)
+		pass
+    	
+    def initializePage(self):
+		self.configure(os.path.abspath(_output_dir))
+		pass
+	
     pass
 
 
 class CodegenWiz(QWizard):
 
     def run(self):
-        codegen.get_tables_structure()
-        self.exec_()
-        pass
-
+		codegen.get_tables_structure()
+		self.exec_()
+		pass
+	
     def __init__(self, parent = None):
         QWizard.__init__(self, parent)
-
         self.selectTablePage = SelectTablesPage()
         self.previewCodePage = PreviewCodePage()
         self.progressPage = ProgressPage()
