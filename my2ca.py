@@ -22,16 +22,17 @@ import glob
 ###################################################################
 ## MySQL Connection Specific
 
+
 class MySQLConnect:
 
     active_connection = None
 
     def connect(self, host, username, password, db, port):
         try:
-            connection = MySQLdb.connect(host,username,password,db,port)
+            connection = MySQLdb.connect(host, username, password, db, port)
             self.active_connection = connection
             return connection
-        except MySQLdb.Error,e:
+        except MySQLdb.Error, e:
             print 'Error: Connection Failed to the server: %s' % (e.args[1])
             raise Exception(e.args[1])
         pass
@@ -59,6 +60,7 @@ mysqlconnect = MySQLConnect()
 ###################################################################
 ## Language Parser Specific
 
+
 class SQLCol:
     name = str()
     type = str()
@@ -80,6 +82,7 @@ class SQLCol:
 
     pass
 
+
 class SQLTable:
     name = str()
     cols = []
@@ -95,6 +98,7 @@ class SQLTable:
 
     pass
 
+
 class SQLParse:
 
     def convert_sql_table(self, createsql):
@@ -104,7 +108,6 @@ class SQLParse:
             tbl.name = match.group(1)
             tbl.engine = match.group(3)
             tbl.dcharset = match.group(4)
-
 
             bodymatch = re.findall(r'\s*`(\w+)`\s+(\w+)(\((\d+)\))?[\s\w]*,*', match.group(2))
             keymatch = re.findall(r'\s+PRIMARY\s+KEY\s+\(`(\w+)`\),', match.group(2))
@@ -123,17 +126,14 @@ class SQLParse:
             pass
         return tbl
 
-
     def generate_ca_query(self, token):
         pass
-
 
     def convert_sql(self, query):
         pass
     pass
 
 lp = SQLParse()
-
 
 
 ###################################################################
@@ -145,10 +145,7 @@ author = 'Unknown'
 '''
 Template Lookup Directories and Include paths.
 '''
-template_lookup_dir = mako.lookup.TemplateLookup(directories=['templates', '/usr/local/share/my2ca/templates', '/usr/share/my2ca/templates', '/usr/local/lib/my2ca/templates',],
-    module_directory='./.cache',
-    output_encoding='utf-8')
-
+template_lookup_dir = mako.lookup.TemplateLookup(directories=['templates', '/usr/local/share/my2ca/templates', '/usr/share/my2ca/templates', '/usr/local/lib/my2ca/templates', ], module_directory='./.cache', output_encoding='utf-8')
 
 
 def render_template(template, **args):
@@ -160,8 +157,6 @@ def render_template(template, **args):
     return t.render_unicode(**args)
 
 
-
-
 def gen_module(modulename, outpath, data):
     '''
     Generate the module using master template given in <i>modulename</i>,
@@ -169,7 +164,7 @@ def gen_module(modulename, outpath, data):
     outputs to <i>outpath</i>
     '''
     ofile = open(outpath, 'w')
-    if ofile == None:
+    if ofile is None:
         raise IOError("given path is not writable")
     if ofile.closed:
         raise IOError("file created but closed to access")
@@ -181,8 +176,10 @@ def gen_module(modulename, outpath, data):
 # Output dir location
 _output_dir = "./generated_code"
 
+
 def _get_path(filename):
-    return os.path.join(_output_dir,filename)
+    return os.path.join(_output_dir, filename)
+
 
 class CodeGen:
     """
@@ -197,31 +194,31 @@ class CodeGen:
     credentials = str()
 
     connection = None
-    
+
     # let us register a staus callback
-    statusCallback = None #callback(self, message)
-    
+    statusCallback = None  # callback(self, message)
+
     def setStatusCallback(self, callback):
         self.statusCallback = callback
         pass
-    
+
     def unsetStatusCallback(self):
         self.statusCallback = None
         pass
-    
+
     def statusReport(self, message):
         if self.statusCallback:
             self.statusCallback(message)
             pass
         print message
         pass
-    
+
     def get_tables_structure(self):
 
         tbllist = []
 
         for tbl in mysqlconnect.get_table_list(self.connection):
-            tbllist.append((tbl,lp.convert_sql_table((mysqlconnect.get_table_info(self.connection, tbl)))))
+            tbllist.append((tbl, lp.convert_sql_table((mysqlconnect.get_table_info(self.connection, tbl)))))
             pass
         self.tables = dict(tbllist)
         pass
@@ -229,11 +226,11 @@ class CodeGen:
     def export_ca_model(self):
 
         return render_template("model.cql",
-            author = _get_author(),
-            date=_get_date(),
-            keyspace = self.keyspace,
-            t = self.selected_table
-        )
+                               author=_get_author(),
+                               date=_get_date(),
+                               keyspace=self.keyspace,
+                               t=self.selected_table
+                               )
 
     def select_table(self, table):
         tabledef = self.tables.get(table)
@@ -249,7 +246,7 @@ class CodeGen:
         Generate code for the selected tables
         """
         count = 0
-        
+
         if os.path.exists(_output_dir):
             #if the dir exists removes the existing files/folders
             shutil.rmtree(_output_dir)
@@ -257,23 +254,23 @@ class CodeGen:
 
         #create folder
         os.makedirs(_output_dir)
-        
+
         self.statusReport("Create output directory " + _output_dir)
-        
-        f = open(_get_path("conpool.py"),"w")
+
+        f = open(_get_path("conpool.py"), "w")
 
         f.write(render_template("conpool.py",
-            author = _get_author(),
-            date=_get_date(),
-            keyspace = self.keyspace,
-            servers = self.servers,
-            credentials = self.credentials))
+                                author=_get_author(),
+                                date=_get_date(),
+                                keyspace=self.keyspace,
+                                servers=self.servers,
+                                credentials=self.credentials))
         f.flush()
         f.close()
         count += 1
         self.statusReport("Created connection pool: " + _get_path("conpool.py"))
-        
-        f = open(_get_path("structure.cql"),"w")
+
+        f = open(_get_path("structure.cql"), "w")
 
         f.write(self.export_ca_model())
         f.flush()
@@ -281,11 +278,11 @@ class CodeGen:
         count += 1
         self.statusReport("Created cassandra structure: " + _get_path("structure.cql"))
 
-        f = open(_get_path("entity.py"),"w")
+        f = open(_get_path("entity.py"), "w")
 
         f.write(render_template("entity.py",
-            author = _get_author(),
-            date=_get_date()))
+                                author=_get_author(),
+                                date=_get_date()))
         f.flush()
         f.close()
         count += 1
@@ -293,18 +290,18 @@ class CodeGen:
 
         for ff in self.selected_table:
             self.statusReport("Generating table : " + ff.name)
-            f = open(_get_path(ff.name + ".py"),"w")
+            f = open(_get_path(ff.name + ".py"), "w")
             f.write(self.generate_table(ff))
             f.flush()
             f.close()
             count += 1
             pass
         self.statusReport("Generated " + str(count) + " files")
-        
+
         self.statusReport("Testing generated code for syntax errors")
-        status_passed = True;
-        for file in glob.glob(_output_dir+"/*.py"):
-            self.statusReport("Lint " + file )
+        status_passed = True
+        for file in glob.glob(_output_dir + "/*.py"):
+            self.statusReport("Lint " + file)
             try:
                 py_compile.compile(file)
             except py_compile.PyCompileError:
@@ -318,23 +315,25 @@ class CodeGen:
             self.statusReport("Test failed")
             pass
         pass
-    
+
     def select_all(self):
         self.selected_table = self.tables.values()
         pass
 
     def generate_table_by_name(self, table_name):
         content = self.tables.get(table_name)
-        return render_template("entitytemplate.py", author = _get_author(), date = _get_date(), t = content)
+        return render_template("entitytemplate.py", author=_get_author(), date=_get_date(), t=content)
 
     def generate_table(self, table):
-        return render_template("entitytemplate.py", author = _get_author(), date = _get_date(), t = table)
+        return render_template("entitytemplate.py", author=_get_author(), date=_get_date(), t=table)
     pass
 
 codegen = CodeGen()
 
+
 def _get_author():
     return getpass.getuser()
+
 
 def _get_date():
     return datetime.date.today()
@@ -344,18 +343,23 @@ def _get_date():
 
 ###################################################################
 ## UI Genered Content
+
+
 try:
-  from uigen import *
+    from uigen import *
 except ImportError:
-  # this means we are in production mode
-  pass
+    # this means we are in production mode
+    pass
+
 
 ###################################################################
 
 ###################################################################
 ## UI related classes
 
+
 from PySide.QtGui import *
+
 
 available_tables = None
 selected_tables = None
@@ -406,6 +410,7 @@ class SelectTablesPage(QWizardPage):
 
     pass
 
+
 class PreviewCodePage(QWizardPage):
 
     def __init__(self):
@@ -421,31 +426,33 @@ class PreviewCodePage(QWizardPage):
 
     pass
 
+
 class ProgressPage(QWizardPage):
-    
+
     def __init__(self):
         QWizardPage.__init__(self)
         self.ui = Ui_progressPage()
         self.ui.setupUi(self)
         self.ui.generateButton.clicked.connect(self.generate)
         pass
-    
+
     def logm(self, message):
         self.ui.generateLog.append(message)
         pass
-    
+
     def generate(self):
         codegen.setStatusCallback(self.logm)
         cg_thread = threading.Thread(target=self.generate_thread)
         cg_thread.start()
         cg_thread.join()
         pass
-    
+
     def generate_thread(self):
         codegen.generate_code()
         codegen.unsetStatusCallback()
         pass
     pass
+
 
 class FinalizePage(QWizardPage):
 
@@ -454,15 +461,15 @@ class FinalizePage(QWizardPage):
         self.ui = Ui_finalizePage()
         self.ui.setupUi(self)
         pass
-    
+
     def configure(self, location):
         self.ui.locationLabel.setText(location)
         pass
-        
+
     def initializePage(self):
         self.configure(os.path.abspath(_output_dir))
         pass
-    
+
     pass
 
 
@@ -472,8 +479,8 @@ class CodegenWiz(QWizard):
         codegen.get_tables_structure()
         self.exec_()
         pass
-    
-    def __init__(self, parent = None):
+
+    def __init__(self, parent=None):
         QWizard.__init__(self, parent)
         self.selectTablePage = SelectTablesPage()
         self.previewCodePage = PreviewCodePage()
@@ -492,10 +499,9 @@ class CodegenWiz(QWizard):
     pass
 
 
-
 class ConnectMySqlDlg(QDialog):
 
-    def __init__(self, parent = None):
+    def __init__(self, parent=None):
         QDialog.__init__(self, parent)
         self.ui = Ui_connectMySqlDlg()
         self.ui.setupUi(self)
@@ -512,21 +518,19 @@ class ConnectMySqlDlg(QDialog):
             raise Exception('Host cannot be empty')
 
         user = self.ui.userE.text()
-        if user=="":
+        if user == "":
             raise Exception('User cannot be empty')
 
         database = self.ui.dbE.text()
-        if database=="":
+        if database == "":
             raise Exception('Database name cannot be empty')
 
-        details = {'host':host,
-                   'user':self.ui.userE.text(),
-                   'password':self.ui.passE.text(),
-                   'database':self.ui.dbE.text(),
-                   'port':self.ui.portE.text(),}
+        details = {'host': host,
+                   'user': self.ui.userE.text(),
+                   'password': self.ui.passE.text(),
+                   'database': self.ui.dbE.text(),
+                   'port': self.ui.portE.text(), }
         return details
-
-
 
 
 class MainWindow(QMainWindow):
@@ -536,7 +540,7 @@ class MainWindow(QMainWindow):
     messageBox = None
 
     def generate_code(self):
-        if self.connection == None:
+        if self.connection is None:
             print "Generate Code: No connection to generate code"
             pass
         connection = self.connection
@@ -547,7 +551,7 @@ class MainWindow(QMainWindow):
 #        docgen.generate_doc()
 #        QMessageBox.information(self,"Generate","Generation Succesful")
         pass
-    
+
     def connect_mysql(self):
         dlg = ConnectMySqlDlg()
         dlg.run()
@@ -555,17 +559,15 @@ class MainWindow(QMainWindow):
             try:
                 c = dlg.get_details()
             except Exception as e:
-                QMessageBox.critical(self,"Open MySQL", e.message)
+                QMessageBox.critical(self, "Open MySQL", e.message)
                 return
 
-
             try:
-
                 self.connection = mysqlconnect.connect(c['host'],
-                    c['user'],
-                    c['password'],
-                    c['database'],
-                    int(c['port']))
+                                                       c['user'],
+                                                       c['password'],
+                                                       c['database'],
+                                                       int(c['port']))
             except Exception as e:
                 QMessageBox.critical(self, "Open MySQL", e.message)
                 return
@@ -577,7 +579,8 @@ class MainWindow(QMainWindow):
             codegen.connection = self.connection
             codegen.keyspace = c['database']
             codegen.get_tables_structure()
-
+            pass
+        pass
 
     def __init__(self):
         QMainWindow.__init__(self)
@@ -602,7 +605,6 @@ class My2Ca:
             exit(0)
             pass
         arg = sys.argv[1]
-
 
         if arg == '-g':
             '''GUI application requested'''
@@ -633,7 +635,7 @@ class My2Ca:
                 pass
 
             connection = mysqlconnect.connect(c_host, c_user, c_password, c_db, c_port)
-            
+
             codegen = CodeGen()
 
             codegen.connection = connection
@@ -658,4 +660,3 @@ my2ca = My2Ca()
 if __name__ == '__main__':
     my2ca.cmd_handle_main()
     pass
-
