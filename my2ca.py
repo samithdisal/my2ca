@@ -1,3 +1,7 @@
+## Copyright 2013 Samith Sandanayake <samithdisal [at] gmail [dot] com>
+## Thid file is part of project MY2CA
+## All code is published under GNU GPL v3
+##
 
 __author__ = 'samiths'
 

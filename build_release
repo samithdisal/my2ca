@@ -1,4 +1,9 @@
 #!/bin/bash
+## Copyright 2013 Samith Sandanayake <samithdisal [at] gmail [dot] com>
+## Thid file is part of project MY2CA
+## All code is published under GNU GPL v3
+##
+
 
 if [ -d my2ca_setup_temp ]
 then
